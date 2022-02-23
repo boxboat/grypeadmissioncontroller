@@ -18,7 +18,7 @@ Grype will cache the vulernability DB _but not the results of a scan_. This is b
 
 Why not use helm? Because the user is required to generate unique certificates for themselves and we cannot execute the openssl commands from helm.
 
-Set `GRYPE_VERSION` in your env to specify which version of the container to deploy, or it will default to `latest`.
+Set `GRYPE_VERSION` in your env to specify which version of the admission container to deploy, or it will default to `latest`. That is not the version of grype, that refers to a version here.
 
 Set `IMAGEPULLSECRET` in your env to the name of the imagePullSecret you want to use. Leave this blank if not needed. Note that we will not generate this for you - you are responsible for your own authentication to your registry.
 
