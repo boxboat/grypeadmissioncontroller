@@ -1,0 +1,4 @@
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature,keyEncipherment
+extendedKeyUsage = serverAuth,clientAuth
+subjectAltName = DNS:grypy.default.svc,DNS:grypy,DNS:grypy.default,DNS:grypy.default.svc.cluster.local

@@ -1,0 +1,8 @@
+# Don't track generated manifests as you really need to generate the certs uniquely
+manifest.yaml
+grypy.csr
+grumpy.csr
+certs/ca.* 
+certs/grypy-*
+certs/grumpy-*
+certs/certs-secret.yaml

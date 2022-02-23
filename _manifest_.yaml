@@ -1,0 +1,121 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grypy
+  namespace: default
+  labels:
+    name: grypy
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    targetPort: 8080
+  selector:
+    name: grypy 
+---
+# https://github.com/anchore/grype#configuration
+# Fill out .grype/config.yaml with some nice-to-haves
+# Ignore rules for whitelisting: https://github.com/anchore/grype#specifying-matches-to-ignore
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grypeconfig
+data:
+  config.yaml: |
+    check-for-app-update: true
+    output: "table"
+    quiet: false
+    db:
+      auto-update: true
+      cache-dir: "/tmp"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grypy
+  namespace: default
+  labels:
+    name: grypy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: grypy
+  template:
+    metadata:
+      name: grypy 
+      labels:
+        name: grypy
+    spec:
+      ${CONSTRUCTED_SECRET}
+      containers:
+        - name: webhook
+          image: registry.gitlab.com/boxboat/private/demos/grype-admission-controller:${GRYPE_VERSION}
+          imagePullPolicy: Always
+          args:
+            - -alsologtostderr
+            - --log_dir=/
+            - -v=10
+            - 2>&1
+          env:
+          - name: SEVERITY
+            value: "medium"
+          - name: XDG_CONFIG_HOME
+            value: "/"
+          resources:
+            limits:
+              memory: 50Mi
+              cpu: 300m
+            requests:
+              memory: 00Mi
+              cpu: 300m
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/certs
+              readOnly: true
+            - name: logs
+              mountPath: /tmp
+            - name: config
+              mountPath: "/grype"
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: grypy
+        - name: logs
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: grypeconfig
+            items:
+            - key: "config.yaml"
+              path: "config.yaml"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: grypy
+webhooks:
+  - name: grypy.kubernetes.io
+    clientConfig:
+      service:
+        name: grypy
+        namespace: default
+        path: "/validate"
+      caBundle: "${CA_BUNDLE}"
+    rules:
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    failurePolicy: Ignore
+    sideEffects: None
+    admissionReviewVersions: ["v1", "v1beta1"]
+    namespaceSelector:
+      matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: NotIn
+        values: ["kube-system"]

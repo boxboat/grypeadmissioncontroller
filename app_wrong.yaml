@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: not-smooth-app
+spec:
+  containers:
+  - image: curlimages/curl:7.65.3
+    name: not-smooth-app
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo I am a BAD container who will run forever; sleep 10;done"]

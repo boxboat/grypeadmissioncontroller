@@ -1,0 +1,6 @@
+webhooks:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  failurePolicy: Fail
+  name: grypy.kubernetes.io

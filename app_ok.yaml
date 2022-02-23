@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: smooth-app
+spec:
+  containers:
+  - image: curlimages/curl
+    name: smooth-app
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo I am a GOOD container who will run forever; sleep 10;done"]
