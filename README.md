@@ -2,6 +2,10 @@
 
 This runs [grype](https://github.com/anchore/grype) as an admission controller. There is a `configmap` which allows you to specify a grype config file which is where most or all of the customization should take place. Everything else is a simple "accept this pod JSON, scan it" operation. Grype will use caching (by default) to avoid murdering the CVE database, but this can be disabled for air-gapped environments. There is documentation on editing the `configmap` for adding whitelists in the `configmap`.
 
+## I need help! I can't get my pods to run after installing this!
+
+We would be glad to help you fix your applications and help with kubernetes in general! You can [contact us here](https://boxboat.com/company/contact-us/). Please do not open issues with your specific applications problems.
+
 ## Why?
 
 Shift-left the security scanning portions. This allows for a more natural workflow with gitops/helm charts being able to grab pods from their respective registries without giving up the security scanning which might be baked into your own registry.
