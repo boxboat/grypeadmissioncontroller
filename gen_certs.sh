@@ -5,7 +5,7 @@ set -o nounset
 set -o pipefail
 
 # figure out if GRYPE_VERSION is set and set it if not
-if [ -z ${GRYPE_VERSION+x} ]; then export GRYPE_VERSION=latest; fi
+if [ -z ${GRYPE_VERSION+x} ]; then export GRYPE_VERSION=main; fi
 
 # figure out if the user specified an IMGPULLSECRET
 if [ ! -z ${IMAGEPULLSECRET+x} ]; then export CONSTRUCTED_SECRET="imagePullSecrets:

@@ -51,7 +51,7 @@ spec:
       ${CONSTRUCTED_SECRET}
       containers:
         - name: webhook
-          image: registry.gitlab.com/boxboat/private/demos/grype-admission-controller:${GRYPE_VERSION}
+          image: ghcr.io/boxboat/grypeadmissioncontroller:${GRYPE_VERSION}
           imagePullPolicy: Always
           args:
             - -alsologtostderr
