@@ -32,6 +32,10 @@ You may test enforcement with `kubectl apply -f app_ok.yaml` which should pass, 
 
 All contributions need to comply with the Developer Certificate of Origin Version 1.1 (see DCO.txt) and the Apache License 2.0 (see LICENSE).
 
+### Run it locally
+
+We're big fans of [Rancher Desktop](https://rancherdesktop.io/) for our local kubernetes clusters. Please test your changes locally before contributing or before pushing your changes into your environment.
+
 ### go
 
 `rm go.* ; go mod init grypy ; go mod tidy; go mod vendor` and then check your changes in.
