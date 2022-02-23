@@ -5,6 +5,7 @@ on: [push]
 # https://github.com/int128/kaniko-action 
 jobs:
   build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: docker/metadata-action@v3
