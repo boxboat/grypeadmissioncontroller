@@ -30,6 +30,8 @@ You may test enforcement with `kubectl apply -f app_ok.yaml` which should pass, 
 
 ## Building
 
+All contributions need to comply with the Developer Certificate of Origin Version 1.1 (see DCO.txt) and the Apache License 2.0 (see LICENSE).
+
 ### go
 
 `rm go.* ; go mod init grypy ; go mod tidy; go mod vendor` and then check your changes in.
