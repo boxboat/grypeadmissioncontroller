@@ -23,10 +23,11 @@ jobs:
           OUR_VERSION=${{ env.OUR_VERSION }}
           if [ "$THEIR_VERSION" = "$OUR_VERSION" ]; then echo no newer version found; else sed -i '/install.sh/ s/'$OUR_VERSION'/'$THEIR_VERSION'/' ./Dockerfile ; echo FRESHEN=true >> $GITHUB_ENV fi
       - name: Freshen if need be
+        if: ${{ env.FRESHEN }}
         run: |
-          FRESHEN=${{ env.FRESHEN }}
-          if [ "$FRESHEN" = "true" ]; then git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
+          git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
       - name: Create Pull Request
+        if: ${{ env.FRESHEN }}
         uses: peter-evans/create-pull-request@v3
         id: cpr
         with:
@@ -37,6 +38,7 @@ jobs:
           base: main
           delete-branch: true
       - name: merge the pull request
+        if: ${{ env.FRESHEN }}
         uses: juliangruber/merge-pull-request-action@v1
         with:
           number: ${{ steps.cpr.outputs.pull-request-number }} 
