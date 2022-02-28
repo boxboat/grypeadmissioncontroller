@@ -16,7 +16,7 @@ jobs:
       - name: Compare the versions and freshen if need be
         run: if [ "$THEIR_VERSION" = "$OUR_VERSION" ]; then echo no newer version found; else sed -i '/install.sh/ s/'$OUR_VERSION'/'$THEIR_VERSION'/' ./Dockerfile ; export FRESHEN=true fi
       - name: Freshen if need be
-        run: if [ "$FRESHEN" = "true" ]; then git checkout -b freshen; git commit -am 'autorefreshen process'; git push fi
+        run: if [ "$FRESHEN" = "true" ]; then git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         id: cpr
