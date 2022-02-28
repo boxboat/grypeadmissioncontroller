@@ -26,6 +26,8 @@ jobs:
         if: ${{ env.FRESHEN }}
         run: |
           git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Pull Request
         if: ${{ env.FRESHEN }}
         uses: peter-evans/create-pull-request@v3
@@ -37,6 +39,8 @@ jobs:
           branch: freshen
           base: main
           delete-branch: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: merge the pull request
         if: ${{ env.FRESHEN }}
         uses: juliangruber/merge-pull-request-action@v1
@@ -44,3 +48,5 @@ jobs:
           number: ${{ steps.cpr.outputs.pull-request-number }} 
           method: squash
           repo: boxboat/grypeadmissioncontroller
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
