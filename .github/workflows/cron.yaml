@@ -10,13 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get their version
-        run: THEIR_VERSION=$(curl -s "https://api.github.com/repos/anchore/grype/releases/latest" | grep "browser_download_url" | cut -d '"' -f 4 | cut -f 8 -d \/ | uniq)
+        run: |
+          THEIR_VERSION=$(curl -s "https://api.github.com/repos/anchore/grype/releases/latest" | grep "browser_download_url" | cut -d '"' -f 4 | cut -f 8 -d \/ | uniq)
+          echo THEIR_VERSION=$THEIR_VERSION >> $GITHUB_ENV
       - name: Get our version
-        run: OUR_VERSION=$(cat Dockerfile | grep install.sh | awk '{print $NF}')
+        run: |
+          OUR_VERSION=$(cat Dockerfile | grep install.sh | awk '{print $NF}')
+          echo OUR_VERSION=$OUR_VERSION >> $GITHUB_ENV
       - name: Compare the versions and freshen if need be
-        run: if [ "$THEIR_VERSION" = "$OUR_VERSION" ]; then echo no newer version found; else sed -i '/install.sh/ s/'$OUR_VERSION'/'$THEIR_VERSION'/' ./Dockerfile ; export FRESHEN=true fi
+        run: |
+          THEIR_VERSION=${{ env.THEIR_VERSION }}
+          OUR_VERSION=${{ env.OUR_VERSION }}
+          if [ "$THEIR_VERSION" = "$OUR_VERSION" ]; then echo no newer version found; else sed -i '/install.sh/ s/'$OUR_VERSION'/'$THEIR_VERSION'/' ./Dockerfile ; echo FRESHEN=true >> $GITHUB_ENV fi
       - name: Freshen if need be
-        run: if [ "$FRESHEN" = "true" ]; then git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
+        run: |
+          FRESHEN=${{ env.FRESHEN }}
+          if [ "$FRESHEN" = "true" ]; then git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         id: cpr
