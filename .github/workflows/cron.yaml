@@ -2,10 +2,10 @@ name: cron
 
 on:
   schedule:
-    - cron: '5 3 * * *'
+    - cron: '05 06 * * *'
 
 jobs:
-  build:
+  cron:
     name: Automated version refresher
     runs-on: ubuntu-latest
     steps:
@@ -13,6 +13,10 @@ jobs:
         run: |
           THEIR_VERSION=$(curl -s "https://api.github.com/repos/anchore/grype/releases/latest" | grep "browser_download_url" | cut -d '"' -f 4 | cut -f 8 -d \/ | uniq)
           echo THEIR_VERSION=$THEIR_VERSION >> $GITHUB_ENV
+      - name: Check out Code
+        uses: actions/checkout@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get our version
         run: |
           OUR_VERSION=$(cat Dockerfile | grep install.sh | awk '{print $NF}')
@@ -21,32 +25,42 @@ jobs:
         run: |
           THEIR_VERSION=${{ env.THEIR_VERSION }}
           OUR_VERSION=${{ env.OUR_VERSION }}
-          if [ "$THEIR_VERSION" = "$OUR_VERSION" ]; then echo no newer version found; else sed -i '/install.sh/ s/'$OUR_VERSION'/'$THEIR_VERSION'/' ./Dockerfile ; echo FRESHEN=true >> $GITHUB_ENV fi
+          if [ "$THEIR_VERSION" = "$OUR_VERSION" ]; then echo no newer version found; else echo FRESHEN=true >> $GITHUB_ENV ; fi
       - name: Freshen if need be
         if: ${{ env.FRESHEN }}
         run: |
-          git checkout -b freshen; git commit -am 'autorefreshen process'; git push --set-upstream origin freshen fi
+          # This seems like something is broken that I have to specify these...
+          git config user.email "runner@boxboat.com"
+          git config --global user.name "Automatic Refresher"
+          git checkout -b freshen
+          sed -i '/install.sh/ s/'$OUR_VERSION'/'$THEIR_VERSION'/' ./Dockerfile
+          git commit -am 'autorefreshen process'
+          git push --set-upstream origin freshen
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Pull Request
         if: ${{ env.FRESHEN }}
-        uses: peter-evans/create-pull-request@v3
-        id: cpr
+        uses: devops-infra/action-pull-request@v0.4.2
         with:
-          commit-message: automatic update
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: freshen
+          target_branch: main
           title: Automatic Update
           body: The cronjob detected that grype had a release and is updating dependencies
+      - name: Find Pull Request
+        if: ${{ env.FRESHEN }}
+        uses: juliangruber/find-pull-request-action@v1.5.0
+        id: find-pull-request
+        with:
           branch: freshen
-          base: main
-          delete-branch: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: merge the pull request
         if: ${{ env.FRESHEN }}
-        uses: juliangruber/merge-pull-request-action@v1
+        uses: juliangruber/merge-pull-request-action@v1.1.0
         with:
-          number: ${{ steps.cpr.outputs.pull-request-number }} 
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.find-pull-request.outputs.number }}
           method: squash
           repo: boxboat/grypeadmissioncontroller
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
