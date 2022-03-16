@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get their version
+        # The github API gave us a 500 the other day and it caused a headache...
         run: |
-          THEIR_VERSION=$(curl -s "https://api.github.com/repos/anchore/grype/releases/latest" | grep "browser_download_url" | cut -d '"' -f 4 | cut -f 8 -d \/ | uniq)
+          until curl -fs "https://api.github.com/repos/anchore/grype/releases/latest" -o their_version.txt ; do echo "Waiting for GitHub API..." ; sleep 30 ; done
+          THEIR_VERSION=$(cat ./their_version.txt | grep "browser_download_url" | cut -d '"' -f 4 | cut -f 8 -d \/ | uniq)
           echo THEIR_VERSION=$THEIR_VERSION >> $GITHUB_ENV
       - name: Check out Code
         uses: actions/checkout@v2
