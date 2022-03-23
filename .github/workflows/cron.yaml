@@ -65,4 +65,9 @@ jobs:
           repo: boxboat/grypeadmissioncontroller
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Delete freshen branch
+        if: ${{ env.FRESHEN }}
+        uses: dawidd6/action-delete-branch@v3.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: freshen
