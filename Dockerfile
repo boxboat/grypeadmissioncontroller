@@ -5,7 +5,7 @@ WORKDIR /go/src/grypy
 COPY  . .
 RUN useradd -u 10001 webhook
 RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o grypywebhook
-RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v0.40.1
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v0.41.0
 
 FROM scratch
 COPY --from=build-env /go/src/grypy/grypywebhook .
