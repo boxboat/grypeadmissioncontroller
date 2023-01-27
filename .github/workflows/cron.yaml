@@ -16,7 +16,7 @@ jobs:
           THEIR_VERSION=$(cat ./their_version.txt | grep "browser_download_url" | cut -d '"' -f 4 | cut -f 8 -d \/ | uniq)
           echo THEIR_VERSION=$THEIR_VERSION >> $GITHUB_ENV
       - name: Check out Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get our version
@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Pull Request
         if: ${{ env.FRESHEN }}
-        uses: devops-infra/action-pull-request@v0.4.2
+        uses: devops-infra/action-pull-request@v0.5.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: freshen
