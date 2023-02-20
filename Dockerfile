@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.17-stretch AS build-env
+FROM 1.19.6-alpine AS build-env
 RUN mkdir -p /go/src/grypy
 WORKDIR /go/src/grypy
 COPY  . .
