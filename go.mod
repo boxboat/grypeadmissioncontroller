@@ -3,7 +3,7 @@ module grypy
 go 1.19
 
 require (
-	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
+	github.com/golang/glog v1.0.0
 	k8s.io/api v0.26.1
 	k8s.io/apimachinery v0.26.1
 )
