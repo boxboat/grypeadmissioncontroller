@@ -1,4 +1,4 @@
-module grypeadmissioncontroller
+module github.com/boxboat/grypeadmissioncontroller
 
 go 1.20
 
