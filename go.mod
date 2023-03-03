@@ -1,4 +1,4 @@
-module github.com/boxboat/grypeadmissioncontroller
+module grypy
 
 go 1.20
 
