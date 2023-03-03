@@ -1,4 +1,4 @@
-module grypy
+module grypeadmissioncontroller
 
 go 1.19
 
