@@ -3,7 +3,7 @@ module github.com/boxboat/grypeadmissioncontroller
 go 1.20
 
 require (
-	github.com/golang/glog v1.1.0
+	github.com/golang/glog v1.1.1
 	k8s.io/api v0.26.3
 	k8s.io/apimachinery v0.26.3
 )
