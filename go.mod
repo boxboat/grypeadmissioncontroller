@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/golang/glog v1.1.2
 	k8s.io/api v0.28.2
-	k8s.io/apimachinery v0.28.2
+	k8s.io/apimachinery v0.28.3
 )
 
 require (
