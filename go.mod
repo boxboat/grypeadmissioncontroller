@@ -4,8 +4,8 @@ go 1.20
 
 require (
 	github.com/golang/glog v1.2.0
-	k8s.io/api v0.28.3
-	k8s.io/apimachinery v0.28.3
+	k8s.io/api v0.28.4
+	k8s.io/apimachinery v0.28.4
 )
 
 require (
